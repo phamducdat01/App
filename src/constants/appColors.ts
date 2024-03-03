@@ -3,5 +3,6 @@ export const appColors={
     white:'#fff',
     text:'#37364A',
     gay:'#9F9B9B',
-    gay2:'#A8A3A3'  
+    gay2:'#A8A3A3',
+    link:'#5669FF'  
 }
