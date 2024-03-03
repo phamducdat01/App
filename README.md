@@ -1,3 +1,20 @@
+
+download Nodejs --> https://nodejs.org/en    version Recommended
+
+
+download ANDROID STUDIO -->https://developer.android.com/studio
+
+         jdk and GRADLE   
+         check version:
+            https://docs.gradle.org/current/userguide/compatibility.html
+
+            https://stackoverflow.com/questions/30054911/how-to-determine-the-version-of-gradle
+
+setup Environment variable --> https://reactnative.dev/docs/environment-setup?guide=native
+
+
+
+
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
 # Getting Started
