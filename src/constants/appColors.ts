@@ -2,7 +2,9 @@ export const appColors={
     primary:'#5669FF',
     white:'#fff',
     text:'#37364A',
-    gay:'#9F9B9B',
+    gay:'#807A7A',
     gay2:'#A8A3A3',
-    link:'#5669FF'  
+    gay3:'#E4DFDF',
+    link:'#5669FF',
+     
 }
