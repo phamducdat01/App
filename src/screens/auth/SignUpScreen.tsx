@@ -36,7 +36,7 @@ const SignUpScreen = ({ navigation }: any) => {
           placeholder='Full name'
           onChange={(val) => handleChangeValue('username', val)}
           allowClear
-          type='email-address'
+          type='default'
           affix={<User size={22} color={appColors.gay} />}
         />
         <InputComponent
