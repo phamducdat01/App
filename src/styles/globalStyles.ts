@@ -24,6 +24,18 @@ export const globalStyles = StyleSheet.create({
     paddingVertical: 16,
     minHeight: 56,
     flexDirection: 'row',
-    
+
+  },
+
+  section: {
+    paddingHorizontal: 16,
+    paddingBottom: 20,
+  },
+
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+
   }
 })

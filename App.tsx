@@ -12,7 +12,7 @@ const App = () => {
 
   const [accessToken, setaccessToken] = useState('');
 
-  const {getItem,setItem}=useAsyncStorage('assetToken');
+  const { getItem, setItem } = useAsyncStorage('assetToken');
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -22,26 +22,26 @@ const App = () => {
     return () => clearTimeout(timeout);
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     checkLogin();
-  },[]);
+  }, []);
 
-  const checkLogin = async()=>{
-    const token =await getItem();
-    
+  const checkLogin = async () => {
+    const token = await getItem();
+
     token && setaccessToken(token);
   }
 
   return (
     <>
       <StatusBar barStyle='dark-content' backgroundColor='transparent' translucent />
-      {isShowSplash ? <SplashSreen /> : 
-      <NavigationContainer>
-        {
-          accessToken? <MainNavigator />: <AuthNavigator />
-        }
-        
-      </NavigationContainer>}
+      {isShowSplash ? <SplashSreen /> :
+        <NavigationContainer>
+          {
+            accessToken ? <MainNavigator /> : <AuthNavigator />
+          }
+
+        </NavigationContainer>}
     </>
   )
 }
