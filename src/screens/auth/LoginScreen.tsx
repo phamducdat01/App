@@ -6,7 +6,7 @@ import { appColors } from '../../constants/appColors'
 import { fontFamily } from '../../constants/fontFamily'
 import SocialLogin from './components/SocialLogin'
 
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }: any) => {
 
   const [email, setEmail] = useState('');
 
@@ -36,12 +36,12 @@ const LoginScreen = () => {
 
       <SectionComponent>
 
-        <TextComponent size={24} font={fontFamily.bold} text='Sing in' />
+        <TextComponent size={24} title text='Sign in' />
 
         <SpaceComponent height={21} />
         <InputComponent
           value={email}
-          placeholder='Email'
+          placeholder='abc123@gmail.com'
           onChange={(val) => setEmail(val)}
           allowClear
           type='email-address'
@@ -69,16 +69,16 @@ const LoginScreen = () => {
 
           <ButtonComponent
             text='Forgot Password'
-            onPress={() => { }}
-            type='text'
+            type='link'
             textColor={appColors.gay}
+            onPress={() => navigation.navigate('FogotPassword')}
           />
         </RowComponent>
       </SectionComponent>
 
       <SpaceComponent height={16} />
 
-      <SectionComponent>
+      <SectionComponent >
         <ButtonComponent text='SIGN IN' type='primary' />
       </SectionComponent>
 
@@ -87,7 +87,11 @@ const LoginScreen = () => {
       <SectionComponent >
         <RowComponent justify='center'>
           <TextComponent text="Don't have an account?" />
-          <ButtonComponent type='link' text='Sign up' />
+          <ButtonComponent
+            type='link'
+            text='Sign up'
+            onPress={() => navigation.navigate('SignUpScreen')}
+          />
         </RowComponent>
       </SectionComponent>
     </ContainerComponent>
