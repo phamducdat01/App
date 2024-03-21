@@ -11,7 +11,7 @@ const SocialLogin = () => {
             <TextComponent
                 styles={{ textAlign: 'center' }}
                 text='OR'
-                color={appColors.white}
+                color={appColors.gay}
                 size={16}
                 font={fontFamily.medium}
             />
