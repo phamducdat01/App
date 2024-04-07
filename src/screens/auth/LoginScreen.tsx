@@ -1,9 +1,13 @@
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Lock, Sms } from 'iconsax-react-native'
 import React, { useState } from 'react'
-import { Image, Switch } from 'react-native'
+import { Alert, Image, Switch } from 'react-native'
+import { useDispatch } from 'react-redux'
+import authenticationAPI from '../../apis/authApi'
 import { ButtonComponent, ContainerComponent, InputComponent, RowComponent, SectionComponent, SpaceComponent, TextComponent } from '../../components'
 import { appColors } from '../../constants/appColors'
-import { fontFamily } from '../../constants/fontFamily'
+import { addAuth } from '../../redux/reducers/authReducer'
+import { Validate } from '../../utils/validate'
 import SocialLogin from './components/SocialLogin'
 
 const LoginScreen = ({ navigation }: any) => {
@@ -13,6 +17,32 @@ const LoginScreen = ({ navigation }: any) => {
   const [password, setPassword] = useState('');
 
   const [isRemember, setisRemember] = useState(true);
+
+  const dispatch = useDispatch();
+
+  const handleLogin = async () => {
+    const emailValidation = Validate.email(email);
+    if (emailValidation) {
+      try {
+        const res = await authenticationAPI.HandleAuthentication(
+          '/login',
+          { email, password },
+          'post',
+        );
+
+        dispatch(addAuth(res.data));
+
+        await AsyncStorage.setItem(
+          'auth',
+          isRemember ? JSON.stringify(res.data) : email,
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      Alert.alert('Email is not correct!!!!');
+    }
+  };
 
   return (
     <ContainerComponent isImageBackground isScroll>
@@ -26,15 +56,16 @@ const LoginScreen = ({ navigation }: any) => {
 
         }}>
         <Image
-          source={require('../../assets/img/text-logo.png')}
+          source={require('../../assets/img/logomeo.png')}
           style={{
-            width: 162,
-            height: 114,
+            width: 162 * 1.5,
+            height: 114 * 1.5,
+            resizeMode: 'cover'
           }}
         />
       </SectionComponent>
 
-      <SectionComponent>
+      <SectionComponent >
 
         <TextComponent size={24} title text='Sign in' />
 
@@ -79,7 +110,7 @@ const LoginScreen = ({ navigation }: any) => {
       <SpaceComponent height={16} />
 
       <SectionComponent >
-        <ButtonComponent text='SIGN IN' type='primary' />
+        <ButtonComponent onPress={handleLogin} text='SIGN IN' type='primary' />
       </SectionComponent>
 
       <SocialLogin />
@@ -99,3 +130,4 @@ const LoginScreen = ({ navigation }: any) => {
 }
 
 export default LoginScreen
+

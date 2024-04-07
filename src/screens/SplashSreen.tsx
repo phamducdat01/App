@@ -7,23 +7,23 @@ import { appColors } from '../constants/appColors'
 const SplashSreen = () => {
   return (
     <ImageBackground
-      source={require('../assets/img/splash-img.png')}
+      source={require('../assets/img/meo.jpg')}
       style={{
-        flex: 1, 
+        flex: 1,
         justifyContent: 'center',
-        alignItems:'center'
-      }} 
-      imageStyle={{flex:1}}>
-        <Image source={require('../assets/img/logo.png')} style={{
-          width: appInfors.sizes.WIDTH*0.8,
-          resizeMode:'contain',
-          
-        }} />
+        alignItems: 'center'
+      }}
+      imageStyle={{ flex: 1 }}>
+      <Image source={require('../assets/img/logomeo.png')} style={{
+        width: appInfors.sizes.WIDTH * 1,
+        resizeMode: 'contain',
 
-        <SpaceComponent height={20}/>
+      }} />
 
-        <ActivityIndicator color={appColors.gay} size={22} />
-      </ImageBackground>
+      <SpaceComponent height={20} />
+
+      <ActivityIndicator color={appColors.gay} size={22} />
+    </ImageBackground>
   )
 }
 
