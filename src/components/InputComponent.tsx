@@ -15,12 +15,13 @@ interface Props {
     isPassword?: boolean,
     allowClear?: boolean,
     type?: KeyboardType,
+    onEnd?: () => void,
 
 }
 
 const InputComponent = (props: Props) => {
 
-    const { value, onChange, affix, placeholder, suffix, isPassword, allowClear, type } = props;
+    const { value, onChange, affix, placeholder, suffix, isPassword, allowClear, type, onEnd } = props;
 
     const [isShowPass, setIsShowPass] = useState(isPassword ?? false);
 
@@ -37,6 +38,7 @@ const InputComponent = (props: Props) => {
                 placeholderTextColor='#747688'
                 keyboardType={type}
                 autoCapitalize='none'
+                onEndEditing={onEnd}
 
             />
 
