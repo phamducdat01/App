@@ -5,5 +5,5 @@ export const appInfors = {
         WIDTH: Dimensions.get('window').width,
         HEIGHT: Dimensions.get('window').height,
     },
-    BASE_URL: 'http://192.168.0.100:3001',
+    BASE_URL: 'http://192.168.0.102:3001',
 }

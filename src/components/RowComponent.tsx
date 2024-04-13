@@ -15,7 +15,8 @@ const RowComponent = (props: Props) => {
     const { justify, styles, children, onPress } = props;
 
     const localStyle = [globalStyles.row, {
-        justifyContent: justify,
+        justifyContent: justify ?? 'center',
+
     }, styles]
 
     return onPress ? (

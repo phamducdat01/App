@@ -34,6 +34,7 @@ const ContainerComponent = (props: Props) => {
                         // backgroundColor: 'coral',
                         minWidth: 48,
                         minHeight: 48,
+                        justifyContent: 'flex-start'
 
                     }}>
                         {back && (

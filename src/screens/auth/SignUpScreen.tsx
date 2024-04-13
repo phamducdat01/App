@@ -104,6 +104,8 @@ const SignUpScreen = ({ navigation }: any) => {
         'post',
       );
 
+      console.log(res.data.code);
+
       setisLoading(false);
 
       navigation.navigate('Verification', {
@@ -114,42 +116,7 @@ const SignUpScreen = ({ navigation }: any) => {
       console.log(error);
       setisLoading(false);
     }
-    // const { email, password, confirmPassword } = values;
 
-    // const emailValidation = Validate.email(email);
-    // const passwordValidation = Validate.Password(password);
-
-    // if (email && password && confirmPassword) {
-    //   if (emailValidation) {
-    //     if (passwordValidation) {
-    //       seterrorMessage('');
-    //       setisLoading(true);
-    //       try {
-    //         const res = await authenticationAPI.HandleAuthentication('/register', {
-    //           fullname: values.username,
-    //           email,
-    //           password,
-
-    //         }, 'post');
-
-    //         dispatch(addAuth(res.data));
-    //         await AsyncStorage.setItem('auth', JSON.stringify(res.data));
-
-    //         setisLoading(false);
-    //       } catch (error) {
-    //         console.log(error);
-    //         setisLoading(false);
-    //       }
-    //     } else {
-    //       seterrorMessage('Password must be at least 6 characters long !!!');
-    //     }
-    //   } else {
-    //     seterrorMessage('Email has incorrect format !!!');
-    //   }
-
-    // } else {
-    //   seterrorMessage('Please enter complete information');
-    // }
   }
 
   return (
