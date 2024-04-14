@@ -29,8 +29,6 @@ const FogotPassword = () => {
                 'post',
             );
 
-            console.log(res);
-
             Alert.alert('Send mail', 'We sended a email includes new password!!!');
             setIsLoading(false);
         } catch (error) {
