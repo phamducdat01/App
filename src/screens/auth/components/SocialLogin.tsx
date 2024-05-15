@@ -22,9 +22,6 @@ import { LoginButton, LoginManager, Profile, Settings } from 'react-native-fbsdk
 GoogleSignin.configure({
     webClientId:
         '305884282556-gen2kivcjtsf7mvudlu2ou0fvf86mh0d.apps.googleusercontent.com',
-    // iosClientId:
-    //     '51183564123-ftijaqo23c9thm2kfe9ssgqq6p92ru72.apps.googleusercontent.com',
-    // 5E:8F:16:06:2E:A3:CD:2C:4A:0D:54:78:76:BA:A6:F3:8C:AB:F6:25
 });
 Settings.setAppID('782159963980027');
 
@@ -35,6 +32,7 @@ const SocialLogin = () => {
     const dispatch = useDispatch();
 
     const handleLoginWithGoogle = async () => {
+        console.log('Gg');
         await GoogleSignin.hasPlayServices({
             showPlayServicesUpdateDialog: true,
         });

@@ -1,15 +1,24 @@
 import axios from 'axios';
 import queryString from 'query-string';
 import { appInfors } from '../constants/appInfos';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const getAccessToken = async () => {
+    const res = await AsyncStorage.getItem('auth');
+
+    return res ? JSON.parse(res).accesstoken : '';
+};
 
 const axiosClient = axios.create({
     baseURL: appInfors.BASE_URL,
     paramsSerializer: params => queryString.stringify(params),
 });
 
-axiosClient.interceptors.request.use((config: any) => {
+axiosClient.interceptors.request.use(async (config: any) => {
+    const accesstoken = await getAccessToken();
+
     config.headers = {
-        Authorization: '',
+        Authorization: accesstoken ? `Bearer ${accesstoken}` : '',
         Accept: 'application/json',
         ...config.headers,
     };
