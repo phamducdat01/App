@@ -117,6 +117,7 @@ const ModalLocation = (props: Props) => {
         latitude: number;
         longitude: number;
     }) => {
+
         onSelect({
             address: 'This is demo address',
             postion: {
@@ -207,8 +208,13 @@ const ModalLocation = (props: Props) => {
                             latitudeDelta: 0.0922,
                             longitudeDelta: 0.0421,
                         }}
-                        onPress={event =>
-                            handleGetAddressFromPosition(event.nativeEvent.coordinate)
+                        onPress={event => {
+                            event.persist();
+                            const coordinate = event.nativeEvent.coordinate;
+                            handleGetAddressFromPosition(coordinate);
+                            event.persist();
+                            // return handleGetAddressFromPosition(event.nativeEvent.coordinate)
+                        }
                         }
                         region={{
                             latitude: currentLocation.lat,

@@ -1,10 +1,5 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import {
-  AddSquare,
-  Calendar,
-  Location,
-  User
-} from 'iconsax-react-native';
+import { AddSquare, Calendar, Location, User } from 'iconsax-react-native';
 import React, { ReactNode } from 'react';
 import { Platform } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -16,7 +11,6 @@ import EventNavigator from './EventNavigator';
 import ExploreNavigator from './ExploreNavigator';
 import MapNavigator from './MapNavigator';
 import ProfileNavigator from './ProfileNavigator';
-//import DrawerNavigator from './DrawerNavigator';
 
 const TabNavigator = () => {
   const Tab = createBottomTabNavigator();
@@ -31,6 +25,7 @@ const TabNavigator = () => {
           alignItems: 'center',
           backgroundColor: appColors.white,
         },
+        tabBarHideOnKeyboard: true,
         tabBarIcon: ({ focused, color, size }) => {
           let icon: ReactNode;
           color = focused ? appColors.primary : appColors.gray5;
@@ -68,6 +63,7 @@ const TabNavigator = () => {
         tabBarIconStyle: {
           marginTop: 8,
         },
+        tabBarLabelPosition: 'below-icon',
         tabBarLabel({ focused }) {
           return route.name === 'Add' ? null : (
             <TextComponent

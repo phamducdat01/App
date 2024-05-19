@@ -1,14 +1,22 @@
-import { ArrowLeft, ArrowRight, Calendar, Location } from 'iconsax-react-native';
-import React from 'react';
 import {
-    ImageBackground,
+    ArrowLeft,
+    ArrowRight,
+    Calendar,
+    Location,
+    Share,
+} from 'iconsax-react-native';
+import React, { useEffect, useState } from 'react';
+import {
+    ActivityIndicator,
+    Image,
     ScrollView,
     TouchableOpacity,
     View,
-    Image,
 } from 'react-native';
 import { LinearGradient } from 'react-native-linear-gradient';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { useDispatch, useSelector } from 'react-redux';
+import eventAPI from '../../apis/eventApi';
 import {
     AvatarGroup,
     ButtonComponent,
@@ -17,24 +25,180 @@ import {
     SectionComponent,
     SpaceComponent,
     TabBarComponent,
+    TagComponent,
     TextComponent,
 } from '../../components';
 import { appColors } from '../../constants/appColors';
-import { EventModel } from '../../models/EventModel';
-import { globalStyles } from '../../styles/globalStyles';
+import { appInfors } from '../../constants/appInfos';
 import { fontFamily } from '../../constants/fontFamily';
+import { LoadingModal } from '../../modals';
+import { EventModel } from '../../models/EventModel';
+import {
+    AuthState,
+    authSelector,
+    updateFollowing,
+} from '../../redux/reducers/authReducer';
+import { globalStyles } from '../../styles/globalStyles';
+import { DateTime } from '../../utils/DateTime';
+import { UserHandle } from '../../utils/UserHandlers';
+import userAPI from '../../apis/userApi';
+import { ProfileModel } from '../../models/ProfileModel';
+import ModalInvite from '../../modals/ModalInvite';
+//   import {ShareEvent} from '../../utils/shareEvent';
 
 const EventDetail = ({ navigation, route }: any) => {
-    const { item }: { item: EventModel } = route.params;
+    const { id }: { id: string } = route.params;
 
-    return (
+    const [isLoading, setIsLoading] = useState(false);
+    const [followers, setFollowers] = useState<string[]>([]);
+    const [profile, setProfile] = useState<ProfileModel>();
+    const [isVisibleModalinvite, setIsVisibleModalinvite] = useState(false);
+    const [item, setItem] = useState<EventModel>();
+    const [isUpdating, setIsUpdating] = useState(false);
+
+    const auth: AuthState = useSelector(authSelector);
+    const dispatch = useDispatch();
+
+    // console.log(id);
+
+    useEffect(() => {
+        if (id) {
+            getData();
+        }
+    }, [id]);
+
+    const getData = async () => {
+        setIsLoading(true);
+        await getEventById();
+        await getProfile(id);
+        await getFollowersById();
+        setIsLoading(false);
+    };
+
+    useEffect(() => {
+        if (item) {
+            getProfile(item.authorId);
+        }
+    }, [item]);
+
+    const getFollowersById = async () => {
+        const api = `/followers?id=${id}`;
+
+        try {
+            const res = await eventAPI.HandleEvent(api);
+            res && res.data && setFollowers(res.data);
+        } catch (error) {
+            console.log(`Can not get followers by event id ${error}`);
+        }
+    };
+
+    const handleFlower = () => {
+        const items = [...followers];
+
+        if (items.includes(auth.id)) {
+            const index = items.findIndex(element => element === auth.id);
+
+            if (index !== -1) {
+                items.splice(index, 1);
+            }
+        } else {
+            items.push(auth.id);
+        }
+
+        setFollowers(items);
+
+        handleUpdateFollowers(items);
+    };
+
+    const handleUpdateFollowers = async (data: string[]) => {
+        await UserHandle.getFollowersById(auth.id, dispatch);
+
+        const api = `/update-followes`;
+
+        try {
+            await eventAPI.HandleEvent(
+                api,
+                {
+                    id,
+                    followers: data,
+                },
+                'post',
+            );
+        } catch (error) {
+            console.log(`Can not update followers in Event detail line 63, ${error}`);
+        }
+    };
+
+    const getProfile = async (id: string) => {
+        const api = `/get-profile?uid=${id}`;
+        try {
+            const res = await userAPI.HandleUser(api);
+            res && res.data && setProfile(res.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleToggleFollowing = async (id: string) => {
+        const api = `/update-following`;
+
+        setIsUpdating(true);
+        try {
+            const res = await userAPI.HandleUser(
+                api,
+                {
+                    uid: auth.id,
+                    authorId: id,
+                },
+                'put',
+            );
+            dispatch(updateFollowing(res.data));
+            setIsUpdating(false);
+        } catch (error) {
+            console.log(error);
+            setIsUpdating(false);
+        }
+    };
+
+    const getEventById = async () => {
+        const api = `/get-event?id=${id}`;
+
+        try {
+            const res: any = await eventAPI.HandleEvent(api);
+
+            setItem(res.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleCreateBillPaymentDetail = async () => {
+        const data = {
+            createdAt: Date.now(),
+            createdBy: auth.id,
+            eventId: id,
+            price: item?.price,
+            authorId: item?.authorId,
+        };
+
+        const api = `/buy-ticket`;
+
+        try {
+            const res = await eventAPI.HandleEvent(api, data, 'post');
+            navigation.navigate('PaymentScreen', { billDetail: res.data });
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    return isLoading ? (
+        <View style={[globalStyles.container, globalStyles.center, { flex: 1 }]}>
+            <ActivityIndicator />
+        </View>
+    ) : item ? (
         <View style={{ flex: 1, backgroundColor: '#fff' }}>
-            <ImageBackground
-                source={require('../../assets/img/event-image.png')}
-                style={{ flex: 1, height: 244 }}
-                imageStyle={{
-                    resizeMode: 'cover',
-                }}>
+            <View
+                style={{ position: 'absolute', top: 0, right: 0, zIndex: 1, left: 0 }}>
                 <LinearGradient colors={['rgba(0,0,0,0.7)', 'rgba(0,0,0,0)']}>
                     <RowComponent
                         styles={{
@@ -44,7 +208,11 @@ const EventDetail = ({ navigation, route }: any) => {
                         }}>
                         <RowComponent styles={{ flex: 1 }}>
                             <TouchableOpacity
-                                onPress={() => navigation.goBack()}
+                                onPress={() =>
+                                    navigation.canGoBack()
+                                        ? navigation.goBack()
+                                        : navigation.navigate('Main')
+                                }
                                 style={{
                                     width: 48,
                                     height: 48,
@@ -58,26 +226,50 @@ const EventDetail = ({ navigation, route }: any) => {
                                 title
                                 color={appColors.white}
                             />
+                            <ButtonComponent
+                                // onPress={() =>
+                                //     ShareEvent({
+                                //         title: item.title,
+                                //         description: item.description,
+                                //         id,
+                                //     })
+                                // }
+                                icon={<Share size={22} color="white" />}
+                            />
+                            <SpaceComponent width={12} />
                             <CardComponent
+                                onPress={handleFlower}
                                 styles={[globalStyles.noSpaceCard, { width: 36, height: 36 }]}
-                                color="#ffffff4D">
+                                color={
+                                    auth.follow_events && auth.follow_events.includes(item._id)
+                                        ? '#ffffffB3'
+                                        : '#ffffff4D'
+                                }>
                                 <MaterialIcons
                                     name="bookmark"
-                                    color={appColors.white}
+                                    color={
+                                        auth.follow_events && auth.follow_events.includes(item._id)
+                                            ? appColors.danger2
+                                            : appColors.white
+                                    }
                                     size={22}
                                 />
                             </CardComponent>
                         </RowComponent>
                     </RowComponent>
                 </LinearGradient>
-
-                <ScrollView
-                    showsVerticalScrollIndicator={false}
-                    style={{
-                        flex: 1,
-                        paddingTop: 244 - 130,
-                    }}>
-                    <SectionComponent>
+            </View>
+            <ScrollView
+                showsVerticalScrollIndicator={false}
+                style={{
+                    flex: 1,
+                }}>
+                <Image
+                    source={{ uri: item.photoUrl }}
+                    style={{ width: appInfors.sizes.WIDTH, height: 240, resizeMode: 'cover' }}
+                />
+                <SectionComponent styles={{ marginTop: -20 }}>
+                    {item.joined && item.joined.length > 0 ? (
                         <View
                             style={{
                                 justifyContent: 'center',
@@ -95,8 +287,9 @@ const EventDetail = ({ navigation, route }: any) => {
                                         width: '90%',
                                     },
                                 ]}>
-                                <AvatarGroup size={36} />
+                                <AvatarGroup userIds={item.joined} size={36} />
                                 <TouchableOpacity
+                                    onPress={() => setIsVisibleModalinvite(true)}
                                     style={[
                                         globalStyles.button,
                                         { backgroundColor: appColors.primary, paddingVertical: 8 },
@@ -105,80 +298,92 @@ const EventDetail = ({ navigation, route }: any) => {
                                 </TouchableOpacity>
                             </RowComponent>
                         </View>
-                    </SectionComponent>
-                    <View
-                        style={{
-                            backgroundColor: appColors.white,
-                        }}>
-                        <SectionComponent>
-                            <TextComponent
-                                title
-                                size={34}
-                                font={fontFamily.medium}
-                                text={item.title}
+                    ) : (
+                        <>
+                            <ButtonComponent
+                                onPress={() => setIsVisibleModalinvite(true)}
+                                text="Invite"
+                                styles={{ borderRadius: 100 }}
+                                type="primary"
                             />
-                        </SectionComponent>
-                        <SectionComponent>
-                            <RowComponent styles={{ marginBottom: 20 }}>
-                                <CardComponent
-                                    styles={[globalStyles.noSpaceCard, { width: 48, height: 48 }]}
-                                    color={`${appColors.primary}4D`}>
-                                    <Calendar
-                                        variant="Bold"
-                                        color={appColors.primary}
-                                        size={24}
-                                    />
-                                </CardComponent>
-                                <SpaceComponent width={16} />
-                                <View
-                                    style={{
-                                        flex: 1,
-                                        height: 48,
-                                        justifyContent: 'space-around',
-                                    }}>
-                                    <TextComponent
-                                        text="14 December, 2021"
-                                        font={fontFamily.medium}
-                                        size={16}
-                                    />
-                                    <TextComponent
-                                        text="Tuesday, 4:00PM - 9:00PM"
-                                        color={appColors.gay}
-                                    />
-                                </View>
-                            </RowComponent>
-                            <RowComponent styles={{ marginBottom: 20 }}>
-                                <CardComponent
-                                    styles={[globalStyles.noSpaceCard, { width: 48, height: 48 }]}
-                                    color={`${appColors.primary}4D`}>
-                                    <Location
-                                        variant="Bold"
-                                        color={appColors.primary}
-                                        size={24}
-                                    />
-                                </CardComponent>
-                                <SpaceComponent width={16} />
-                                <View
-                                    style={{
-                                        flex: 1,
-                                        height: 48,
-                                        justifyContent: 'space-around',
-                                    }}>
-                                    <TextComponent
-                                        text={item.location.title}
-                                        font={fontFamily.medium}
-                                        size={16}
-                                    />
-                                    <TextComponent
-                                        text={item.location.address}
-                                        color={appColors.gay}
-                                    />
-                                </View>
-                            </RowComponent>
-                            <RowComponent styles={{ marginBottom: 20 }}>
+                        </>
+                    )}
+                </SectionComponent>
+                <View
+                    style={{
+                        backgroundColor: appColors.white,
+                    }}>
+                    <SectionComponent>
+                        <TextComponent
+                            title
+                            size={34}
+                            font={fontFamily.medium}
+                            text={item.title}
+                        />
+                    </SectionComponent>
+                    <SectionComponent>
+                        <RowComponent styles={{ marginBottom: 20 }}>
+                            <CardComponent
+                                styles={[globalStyles.noSpaceCard, { width: 48, height: 48 }]}
+                                color={`${appColors.primary}4D`}>
+                                <Calendar variant="Bold" color={appColors.primary} size={24} />
+                            </CardComponent>
+                            <SpaceComponent width={16} />
+                            <View
+                                style={{
+                                    flex: 1,
+                                    height: 48,
+                                    justifyContent: 'space-around',
+                                }}>
+                                <TextComponent
+                                    text={`${DateTime.GetDate(new Date(item.date))}`}
+                                    font={fontFamily.medium}
+                                    size={16}
+                                />
+                                <TextComponent
+                                    text={`${appInfors.dayNames[new Date(item.date).getDay()]
+                                        }, ${DateTime.GetStartAndEnd(item.startAt, item.endAt)}`}
+                                    color={appColors.gay}
+                                />
+                            </View>
+                        </RowComponent>
+                        <RowComponent styles={{ marginBottom: 20, alignItems: 'flex-start' }}>
+                            <CardComponent
+                                styles={[globalStyles.noSpaceCard, { width: 48, height: 48 }]}
+                                color={`${appColors.primary}4D`}>
+                                <Location variant="Bold" color={appColors.primary} size={24} />
+                            </CardComponent>
+                            <SpaceComponent width={16} />
+                            <View
+                                style={{
+                                    flex: 1,
+                                    minHeight: 48,
+                                    justifyContent: 'space-around',
+                                }}>
+                                <TextComponent
+                                    text={item.locationTitle}
+                                    font={fontFamily.medium}
+                                    size={16}
+                                />
+                                <TextComponent
+                                    text={item.locationAddress}
+                                    color={appColors.gay}
+                                />
+                            </View>
+                        </RowComponent>
+                        {profile && (
+                            <RowComponent
+                                styles={{ marginBottom: 20 }}
+                                onPress={() =>
+                                    navigation.navigate('ProfileScreen', {
+                                        id: item.authorId,
+                                    })
+                                }>
                                 <Image
                                     source={{
-                                        uri: 'https://gamek.mediacdn.vn/133514250583805952/2022/5/18/photo-1-16528608926331302726659.jpg',
+                                        uri: profile.photoUrl
+                                            ? profile.photoUrl
+                                            : 'https://img.icons8.com/cute-clipart/64/user-male-circle.png',
                                     }}
                                     style={{
                                         width: 48,
@@ -195,29 +400,44 @@ const EventDetail = ({ navigation, route }: any) => {
                                         justifyContent: 'space-around',
                                     }}>
                                     <TextComponent
-                                        text="Son Tung MTP"
+                                        text={profile.name ? profile.name : profile?.email}
                                         font={fontFamily.medium}
                                         size={16}
                                     />
                                     <TextComponent
-                                        text="Tuesday, 4:00PM - 9:00PM"
+                                        text={profile.type ? profile.type : 'Personal'}
                                         color={appColors.gay}
                                     />
                                 </View>
+                                {auth.id !== item.authorId && (
+                                    <TagComponent
+                                        label={
+                                            auth.following && auth.following.includes(item.authorId)
+                                                ? 'Unfollow'
+                                                : 'Follow'
+                                        }
+                                        onPress={() => handleToggleFollowing(item.authorId)}
+                                        styles={{
+                                            backgroundColor: `${appColors.primary}20`,
+                                            borderRadius: 12,
+                                        }}
+                                        textStyles={{ fontFamily: fontFamily.regular }}
+                                        textColor={appColors.primary}
+                                    />
+                                )}
                             </RowComponent>
-                        </SectionComponent>
-                        <TabBarComponent title="About Event" />
-                        <SectionComponent>
-                            <TextComponent
-                                text={`Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis necessitatibus ratione asperiores odit exercitationem repellat aliquam at officiis, quasi natus? Consequatur, amet! Iusto velit vitae quidem autem maxime qui exercitationem.`}
-                            />
-                        </SectionComponent>
-                    </View>
-                </ScrollView>
-            </ImageBackground>
+                        )}
+                    </SectionComponent>
+                    <TabBarComponent title="About Event" />
+                    <SectionComponent>
+                        <TextComponent text={item.description} />
+                    </SectionComponent>
+                </View>
+                <SpaceComponent height={80} />
+            </ScrollView>
 
             <LinearGradient
-                colors={['rgba(255, 255, 255, 0.9)', 'rgba(255, 255, 255, 1)']}
+                colors={['rgba(255, 255, 255, 0.7)', 'rgba(255, 255, 255, 1)']}
                 style={{
                     position: 'absolute',
                     bottom: 0,
@@ -226,9 +446,9 @@ const EventDetail = ({ navigation, route }: any) => {
                     padding: 12,
                 }}>
                 <ButtonComponent
-                    text="BUY TICKET $120"
+                    text={`BUY TICKET $${parseFloat(item.price).toLocaleString()}`}
                     type="primary"
-                    onPress={() => { }}
+                    onPress={handleCreateBillPaymentDetail}
                     iconFlex="right"
                     icon={
                         <View
@@ -243,7 +463,19 @@ const EventDetail = ({ navigation, route }: any) => {
                     }
                 />
             </LinearGradient>
+
+            <LoadingModal visible={isUpdating} />
+
+            {/* <ModalInvite
+                title={item.title}
+                visible={isVisibleModalinvite}
+                onClose={() => setIsVisibleModalinvite(false)}
+                eventId={item._id}
+                joined={item.joined}
+            /> */}
         </View>
+    ) : (
+        <></>
     );
 };
 

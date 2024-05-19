@@ -131,7 +131,9 @@ const AddNewScreen = ({ navigation }: any) => {
     const handlePustEvent = async (event: EventModel) => {
         const api = `/add-new`;
         try {
+            console.log("them even");
             const res = await eventAPI.HandleEvent(api, event, 'post');
+            console.log(res);
             navigation.navigate('Explore', {
                 screen: 'HomeScreen',
             });
@@ -171,13 +173,13 @@ const AddNewScreen = ({ navigation }: any) => {
                 ) : (
                     <></>
                 )}
-                {/* <ButtonImagePicker
+                <ButtonImagePicker
                     onSelect={(val: any) =>
                         val.type === 'url'
                             ? handleChangeValue('photoUrl', val.value as string)
                             : handleFileSelected(val.value)
                     }
-                /> */}
+                />
                 <InputComponent
                     placeholder="Title"
                     value={eventData.title}
@@ -193,7 +195,7 @@ const AddNewScreen = ({ navigation }: any) => {
                     onChange={val => handleChangeValue('description', val)}
                 />
 
-                {/* <DropdownPicker
+                <DropdownPicker
                     selected={eventData.category}
                     values={[
                         {
@@ -214,7 +216,7 @@ const AddNewScreen = ({ navigation }: any) => {
                         },
                     ]}
                     onSelect={val => handleChangeValue('category', val)}
-                /> */}
+                />
 
                 <RowComponent>
                     <DateTimePicker
@@ -239,7 +241,7 @@ const AddNewScreen = ({ navigation }: any) => {
                     selected={eventData.date}
                 />
 
-                {/* <DropdownPicker
+                <DropdownPicker
                     label="Invited users"
                     values={usersSelects}
                     onSelect={(val: string | string[]) =>
@@ -247,7 +249,7 @@ const AddNewScreen = ({ navigation }: any) => {
                     }
                     selected={eventData.users}
                     multible
-                /> */}
+                />
                 <InputComponent
                     placeholder="Title Address"
                     allowClear

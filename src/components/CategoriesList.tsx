@@ -1,88 +1,102 @@
-import React, { ReactNode } from 'react';
-import { FlatList } from 'react-native';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { FlatList, Image } from 'react-native';
 import { TagComponent } from '.';
-import { KnifeFork } from '../assets/svgs';
+import eventAPI from '../apis/eventApi';
 import { appColors } from '../constants/appColors';
+import { Category } from '../models/Category';
 
 interface Props {
     isFill?: boolean;
-}
-
-interface Category {
-    icon: ReactNode;
-    color: string;
-    label: string;
-    key: string;
+    onFilter?: (id: string) => void;
 }
 
 const CategoriesList = (props: Props) => {
-    const { isFill } = props;
+    const { isFill, onFilter } = props;
 
-    const categories: Category[] = [
-        {
-            key: 'sports',
-            label: 'Sports',
-            icon: (
-                <FontAwesome5
-                    name="basketball-ball"
-                    color={isFill ? appColors.white : '#F0635A'}
-                    size={20}
-                />
-            ),
-            color: '#F0635A',
-        },
-        {
-            key: 'mucsic',
-            label: 'Music',
-            icon: (
-                <FontAwesome5
-                    name="music"
-                    color={isFill ? appColors.white : '#F59762'}
-                    size={20}
-                />
-            ),
-            color: '#F59762',
-        },
-        {
-            key: 'food',
-            label: 'Food',
-            icon: <KnifeFork color={isFill ? appColors.white : '#29D697'} />,
-            color: '#29D697',
-        },
-        {
-            key: 'art',
-            label: 'Art',
-            icon: (
-                <Ionicons
-                    name="color-palette"
-                    color={isFill ? appColors.white : '#46CDFB'}
-                />
-            ),
-            color: '#46CDFB',
-        },
-    ];
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [categorySelected, setCategorySelected] = useState('');
 
-    return (
+    const navigation: any = useNavigation();
+
+    useEffect(() => {
+        getCategories();
+    }, []);
+
+    useEffect(() => {
+        if (categorySelected && onFilter) {
+            onFilter(categorySelected);
+        }
+    }, [categorySelected]);
+
+    const getCategories = async () => {
+        const api = `/get-categories`;
+
+        try {
+            const res = await eventAPI.HandleEvent(api);
+            setCategories(res.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleSelectCategory = async (item: Category) => {
+        if (!onFilter) {
+            navigation.navigate('CategoryDetail', {
+                id: item._id,
+                title: item.title,
+            });
+        } else {
+            setCategorySelected(item._id);
+        }
+    };
+
+    return categories.length > 0 ? (
         <FlatList
             style={{ paddingHorizontal: 16 }}
             horizontal
             showsHorizontalScrollIndicator={false}
             data={categories}
+            keyExtractor={item => item._id}
             renderItem={({ item, index }) => (
                 <TagComponent
                     styles={{
                         marginRight: index === categories.length - 1 ? 28 : 12,
                         minWidth: 82,
                     }}
-                    bgColor={isFill ? item.color : appColors.white}
-                    onPress={() => { }}
-                    icon={item.icon}
-                    label={item.label}
+                    bgColor={
+                        isFill
+                            ? item.color
+                            : categorySelected === item._id
+                                ? item.color
+                                : 'white'
+                    }
+                    onPress={() => handleSelectCategory(item)}
+                    label={item.title}
+                    icon={
+                        <Image
+                            source={{
+                                uri: isFill
+                                    ? item.iconWhite
+                                    : categorySelected === item._id
+                                        ? item.iconWhite
+                                        : item.iconColor,
+                            }}
+                            style={{ width: 20, height: 20 }}
+                        />
+                    }
+                    textColor={
+                        isFill
+                            ? 'white'
+                            : categorySelected === item._id
+                                ? appColors.white
+                                : appColors.text2
+                    }
                 />
             )}
         />
+    ) : (
+        <></>
     );
 };
 
