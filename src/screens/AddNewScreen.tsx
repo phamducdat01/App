@@ -155,6 +155,7 @@ const AddNewScreen = ({ navigation }: any) => {
 
     return (
         <ContainerComponent isImageBackground isScroll>
+
             <SectionComponent>
                 <TextComponent text="Add new" title />
             </SectionComponent>
@@ -278,9 +279,9 @@ const AddNewScreen = ({ navigation }: any) => {
 
             <SectionComponent>
                 <ButtonComponent
-                    disable={errorsMess.length > 0}
+                    // disable={errorsMess.length > 0}
                     text="Add New"
-                    // onPress={handleAddEvent}
+                    onPress={handleAddEvent}
                     type="primary"
                 />
             </SectionComponent>

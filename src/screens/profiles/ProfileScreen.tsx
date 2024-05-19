@@ -6,6 +6,8 @@ import { LoginManager } from 'react-native-fbsdk-next';
 import { useDispatch } from 'react-redux';
 import { removeAuth } from '../../redux/reducers/authReducer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import MapView from 'react-native-maps';
+import { appInfors } from '../../constants/appInfos';
 
 const ProfileScreen = () => {
     const dispatch = useDispatch();
@@ -23,6 +25,8 @@ const ProfileScreen = () => {
                     await AsyncStorage.clear();
                 }}
             />
+
+
         </ContainerComponent>
     );
 };

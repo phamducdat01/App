@@ -6104,6 +6104,11 @@ react-native-gesture-handler@^2.15.0:
     lodash "^4.17.21"
     prop-types "^15.7.2"
 
+react-native-google-static-map@^0.1.13:
+  version "0.1.13"
+  resolved "https://registry.yarnpkg.com/react-native-google-static-map/-/react-native-google-static-map-0.1.13.tgz#de2188938e0308acb4893580a63dc7b00f4d2b78"
+  integrity sha512-k/0rZrMriciHPgBer/H20KjnR1IVmYXRsH0rOVeO9NvbowKnDhUtVa4JKdezEmdzRcw/2rwMHiY5AnAMprCiPA==
+
 react-native-image-crop-picker@^0.41.1:
   version "0.41.1"
   resolved "https://registry.npmjs.org/react-native-image-crop-picker/-/react-native-image-crop-picker-0.41.1.tgz"

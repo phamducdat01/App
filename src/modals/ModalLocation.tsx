@@ -17,7 +17,7 @@ import {
 } from '../components';
 import { appColors } from '../constants/appColors';
 import { LocationModel } from '../models/LocationModel';
-import MapView from 'react-native-maps';
+import MapView, { UrlTile } from 'react-native-maps';
 import { appInfors } from '../constants/appInfos';
 import { AddressModel } from '../models/AddressModel';
 import GeoLocation from '@react-native-community/geolocation';
@@ -58,6 +58,8 @@ const ModalLocation = (props: Props) => {
                         lat: position.coords.latitude,
                         long: position.coords.longitude,
                     });
+
+                    console.log(currentLocation);
                 }
             },
             error => {
@@ -99,6 +101,7 @@ const ModalLocation = (props: Props) => {
 
             if (res && res.data && res.status === 200) {
                 setLocations(res.data.items);
+                // console.log(res.data.items)
             }
 
             setIsLoading(false);
@@ -186,6 +189,8 @@ const ModalLocation = (props: Props) => {
                     <SpaceComponent width={12} />
                     <ButtonComponent text="Cancel" type="link" onPress={handleClose} />
                 </RowComponent>
+
+
                 {currentLocation && (
                     <MapView
                         style={{
@@ -214,6 +219,8 @@ const ModalLocation = (props: Props) => {
                         mapType="standard"
                     />
                 )}
+
+
                 <View
                     style={{
                         position: 'absolute',

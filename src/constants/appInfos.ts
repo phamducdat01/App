@@ -5,7 +5,7 @@ export const appInfors = {
         WIDTH: Dimensions.get('window').width,
         HEIGHT: Dimensions.get('window').height,
     },
-    BASE_URL: 'http://192.168.0.103:3001',
+    BASE_URL: 'http://192.168.0.102:3001',
     GoogleApiKey: 'AIzaSyCbtwJ3e1wGs0RcFkgQPtaLwg0P4XxkELA',
     monthNames: [
         'January',

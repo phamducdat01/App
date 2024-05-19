@@ -10,6 +10,8 @@ interface Props {
 }
 
 const ChoiceLocation = (props: Props) => {
+
+    // console.log("Chose");
     const { onSelect } = props;
 
     const [isVibleModalLocation, setIsVibleModalLocation] = useState(false);
