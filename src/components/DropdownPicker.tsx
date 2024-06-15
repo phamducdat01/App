@@ -53,7 +53,8 @@ const DropdownPicker = (props: Props) => {
             if (index !== -1) {
                 data.splice(index, 1);
             }
-
+            console.log('data');
+            console.log(data);
             setSelectedItems(data);
         } else {
             setSelectedItems([...selectedItems, id]);
@@ -74,6 +75,7 @@ const DropdownPicker = (props: Props) => {
                 <TouchableOpacity
                     onPress={() => {
                         handleSelectItem(id);
+                        console.log("renderSelectedItem: ")
                         onSelect(selectedItems);
                     }}>
                     <AntDesign name="close" size={18} color={appColors.text} />
@@ -91,6 +93,7 @@ const DropdownPicker = (props: Props) => {
                     multible
                         ? () => handleSelectItem(item.value)
                         : () => {
+                            console.log('renderSelectItem');
                             onSelect(item.value);
                             modalieRef.current?.close();
                         }
@@ -157,7 +160,10 @@ const DropdownPicker = (props: Props) => {
                                     text="Agree"
                                     type="primary"
                                     onPress={() => {
+                                        console.log('Portal:');
+                                        console.log(selectedItems);
                                         onSelect(selectedItems);
+                                        // onSelect('phamducdat171102dta@gmail.com');
                                         modalieRef.current?.close();
                                     }}
                                 />

@@ -29,19 +29,27 @@ const ProfileScreen = ({ navigation, route }: any) => {
     const [userFollowers, setUserFollowers] = useState<string[]>([]);
     const [profileId, setProfileId] = useState('');
 
+    console.log("route.params: ");
+    console.log(route);
+
     const dispatch = useDispatch();
     const auth: AuthState = useSelector(authSelector);
 
     useEffect(() => {
         if (route.params) {
-            const { id } = route.params;
-            setProfileId(id);
+            const { id, email } = route.params;
+            console.log("email: ");
+            console.log(email);
+            setProfileId(email);
+            // setProfileId(id);
+
+            getProfile();
 
             if (route.params.isUpdated) {
                 getProfile();
             }
         } else {
-            setProfileId(auth.id);
+            setProfileId(auth.email);
         }
     }, [route.params]);
 
@@ -52,12 +60,17 @@ const ProfileScreen = ({ navigation, route }: any) => {
         }
     }, [profileId]);
 
+    console.log("profileId: ");
+    console.log(profileId);
+
     const getProfile = async () => {
         const api = `/get-profile?uid=${profileId}`;
 
         setIsLoading(true);
         try {
-            const res = await userAPI.HandleUser(api);
+            const res = await userAPI.HandleUser(api, 'get');
+            console.log("res: ");
+            console.log(res);
             res && res.data && setProfile(res.data);
 
             setIsLoading(false);

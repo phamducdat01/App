@@ -32,6 +32,9 @@ const EventItem = (props: Props) => {
     const navigation: any = useNavigation();
     const auth: AuthState = useSelector(authSelector);
 
+    console.log('auth.users: ');
+    console.log(item.users);
+
     return (
         <CardComponent
             isShadow
@@ -77,6 +80,17 @@ const EventItem = (props: Props) => {
                                     />
                                 </CardComponent>
                             )}
+
+                            <CardComponent
+                                styles={[globalStyles.noSpaceCard]}
+                                color="#ffffffB3">
+                                <MaterialIcons
+                                    name="bookmark"
+                                    color={appColors.danger2}
+                                    size={22}
+                                />
+                            </CardComponent>
+
                         </RowComponent>
                     </ImageBackground>
                     <TextComponent numOfLine={1} text={item.title} title size={18} />

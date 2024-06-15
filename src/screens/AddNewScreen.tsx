@@ -98,12 +98,13 @@ const AddNewScreen = ({ navigation }: any) => {
 
     const handleAddEvent = async () => {
         if (fileSelected) {
+            console.log("dang tao firebase img");
             const filename = `${fileSelected.filename ?? `image-${Date.now()}`}.${fileSelected.path.split('.')[1]
                 }`;
             const path = `images/${filename}`;
 
             const res = storage().ref(path).putFile(fileSelected.path);
-
+            console.log("dang tao fb");
             res.on(
                 'state_changed',
                 snap => {
@@ -112,7 +113,7 @@ const AddNewScreen = ({ navigation }: any) => {
                 error => {
                     console.log(error);
                 },
-                () => {
+                async () => {
                     storage()
                         .ref(path)
                         .getDownloadURL()
@@ -132,6 +133,7 @@ const AddNewScreen = ({ navigation }: any) => {
         const api = `/add-new`;
         try {
             console.log("them even");
+            console.log(event);
             const res = await eventAPI.HandleEvent(api, event, 'post');
             console.log(res);
             navigation.navigate('Explore', {
@@ -244,10 +246,13 @@ const AddNewScreen = ({ navigation }: any) => {
                 <DropdownPicker
                     label="Invited users"
                     values={usersSelects}
-                    onSelect={(val: string | string[]) =>
-                        handleChangeValue('users', val as string[])
+                    onSelect={(val: string | string[]) => {
+                        console.log(`val: ${val}`);
+                        handleChangeValue('users', 'phamducdat171102dta@gmail.com')
+                    }
                     }
                     selected={eventData.users}
+                    // selected='hhh'
                     multible
                 />
                 <InputComponent

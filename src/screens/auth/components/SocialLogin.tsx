@@ -41,6 +41,8 @@ const SocialLogin = () => {
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
 
+            console.log("userInfo");
+            console.log(userInfo.user);
 
             const user = userInfo.user;
 

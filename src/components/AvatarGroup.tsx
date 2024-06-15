@@ -11,15 +11,12 @@ interface Props {
 
 const AvatarGroup = (props: Props) => {
     const { size, userIds } = props;
-    const photoUrl =
-        'https://gamek.mediacdn.vn/133514250583805952/2022/5/18/photo-1-16528608926331302726659.jpg';
     return (
         <RowComponent justify="flex-start" styles={{ marginVertical: 12 }}>
             {userIds.length > 0 && (
                 <>
                     {userIds.map((item, index) => (
                         <AvatarComponent
-                            key={index}
                             uid={item}
                             styles={{
                                 borderWidth: 1,

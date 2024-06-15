@@ -44,7 +44,7 @@ import { UserHandle } from '../../utils/UserHandlers';
 import userAPI from '../../apis/userApi';
 import { ProfileModel } from '../../models/ProfileModel';
 import ModalInvite from '../../modals/ModalInvite';
-//   import {ShareEvent} from '../../utils/shareEvent';
+import { ShareEvent } from '../../utils/shareEvent';
 
 const EventDetail = ({ navigation, route }: any) => {
     const { id }: { id: string } = route.params;

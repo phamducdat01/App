@@ -18,21 +18,26 @@ import {
     StatusBar,
     StyleSheet,
     TouchableOpacity,
-    View
+    View,
 } from 'react-native';
 import { LoginManager } from 'react-native-fbsdk-next';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useDispatch, useSelector } from 'react-redux';
-import { RowComponent, SpaceComponent, TextComponent } from '.';
+import { AvatarComponent, RowComponent, SpaceComponent, TextComponent } from '.';
 import { appColors } from '../constants/appColors';
 import { authSelector, removeAuth } from '../redux/reducers/authReducer';
 import { globalStyles } from '../styles/globalStyles';
+import { HandleNotification } from '../utils/handleNotification';
 
 const DrawerCustom = ({ navigation }: any) => {
-    const user = useSelector(authSelector);
+    const auth = useSelector(authSelector);
+
+    console.log('auth: ');
+    console.log(auth.id);
     const dispatch = useDispatch();
     const size = 20;
     const color = appColors.gay;
+
     const profileMenu = [
         {
             key: 'MyProfile',
@@ -76,44 +81,61 @@ const DrawerCustom = ({ navigation }: any) => {
         },
     ];
 
-    const handleSignOut = async () => {
+    const handleLogout = async () => {
+        const fcmtoken = await AsyncStorage.getItem('fcmtoken');
+
+        if (fcmtoken) {
+            if (auth.fcmTokens && auth.fcmTokens.length > 0) {
+                const items = [...auth.fcmTokens];
+                const index = items.findIndex(element => element === fcmtoken);
+
+                if (index !== -1) {
+                    items.splice(index, 1);
+                }
+
+                await HandleNotification.Update(auth.id, items);
+            }
+        }
+
         await GoogleSignin.signOut();
-        await LoginManager.logOut();
+        LoginManager.logOut();
+
+        // clear local storage
+        await AsyncStorage.removeItem('auth');
+
         dispatch(removeAuth({}));
-        await AsyncStorage.clear();
+    };
+
+    const handleNavigation = (key: string) => {
+        switch (key) {
+            case 'SignOut':
+                handleLogout();
+                break;
+
+            case 'MyProfile':
+                navigation.navigate('Profile', {
+                    screen: 'ProfileScreen',
+                    params: {
+                        id: auth.id,
+                        email: auth.email,
+                    },
+                });
+                break;
+            default:
+                console.log(key);
+                break;
+        }
+
+        navigation.closeDrawer();
     };
 
     return (
         <View style={[localStyles.container]}>
-            <TouchableOpacity
-                onPress={() => {
-                    navigation.closeDrawer();
-
-                    navigation.navigate('Profile', {
-                        screen: 'ProfileScreen',
-                    });
-                }}>
-                {user.photo ? (
-                    <Image source={{ uri: user.photo }} style={[localStyles.avatar]} />
-                ) : (
-                    <View
-                        style={[localStyles.avatar, { backgroundColor: appColors.gay2 }]}>
-                        <TextComponent
-                            title
-                            size={22}
-                            color={appColors.white}
-                            text={
-                                user.name
-                                    ? user.name
-                                        .split(' ')
-                                    [user.name.split(' ').length - 1].substring(0, 1)
-                                    : ''
-                            }
-                        />
-                    </View>
-                )}
-                <TextComponent text={user.name} title size={18} />
-            </TouchableOpacity>
+            <AvatarComponent
+                onPress={() => handleNavigation('MyProfile')}
+                photoURL={auth.photo}
+                name={auth.name ? auth.name : auth.email}
+            />
             <FlatList
                 showsVerticalScrollIndicator={false}
                 data={profileMenu}
@@ -121,14 +143,7 @@ const DrawerCustom = ({ navigation }: any) => {
                 renderItem={({ item, index }) => (
                     <RowComponent
                         styles={[localStyles.listItem]}
-                        onPress={
-                            item.key === 'SignOut'
-                                ? () => handleSignOut()
-                                : () => {
-                                    console.log(item.key);
-                                    navigation.closeDrawer();
-                                }
-                        }>
+                        onPress={() => handleNavigation(item.key)}>
                         {item.icon}
                         <TextComponent
                             text={item.title}

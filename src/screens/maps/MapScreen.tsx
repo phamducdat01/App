@@ -28,6 +28,7 @@ const MapScreen = ({ navigation }: any) => {
     }>();
     const [events, setEvents] = useState<EventModel[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [inputValue, setInputValue] = useState('');
     const isFocused = useIsFocused();
 
     //eventhub://app/detail/12345
@@ -140,8 +141,8 @@ const MapScreen = ({ navigation }: any) => {
                                 </TouchableOpacity>
                             }
                             placeholder="Search"
-                            value=""
-                            onChange={val => console.log(val)}
+                            value={inputValue}
+                            onChange={val => setInputValue(val)}
                         />
                     </RowComponent>
                     <SpaceComponent width={12} />
@@ -181,3 +182,76 @@ const MapScreen = ({ navigation }: any) => {
 };
 
 export default MapScreen;
+
+
+// import React, { useState } from 'react';
+// import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+// import axios from 'axios';
+
+// const App = () => {
+//     const [address, setAddress] = useState('');
+//     const [currentLocation, setCurrentLocation] = useState({ lat: null, lon: null });
+
+//     const handleGeocode = async () => {
+//         try {
+//             const response = await axios.get('https://nominatim.openstreetmap.org/search', {
+//                 params: {
+//                     q: address,
+//                     format: 'json',
+//                 },
+//             });
+
+//             if (response.data.length > 0) {
+//                 const location = response.data[0];
+//                 setCurrentLocation({
+//                     lat: location.lat,
+//                     lon: location.lon,
+//                 });
+//             } else {
+//                 console.warn('No results found for the given address.');
+//             }
+//         } catch (error) {
+//             console.error('Failed to fetch location:', error);
+//         }
+//     };
+
+//     return (
+//         <View style={styles.container}>
+//             <TextInput
+//                 style={styles.input}
+//                 placeholder="Enter address"
+//                 value={address}
+//                 onChangeText={text => setAddress(text)}
+//             />
+//             <Button title="Get Location" onPress={handleGeocode} />
+//             {currentLocation.lat && currentLocation.lon && (
+//                 <Text style={styles.text}>
+//                     Latitude: {currentLocation.lat}, Longitude: {currentLocation.lon}
+//                 </Text>
+//             )}
+//         </View>
+//     );
+// };
+
+// const styles = StyleSheet.create({
+//     container: {
+//         flex: 1,
+//         justifyContent: 'center',
+//         alignItems: 'center',
+//         padding: 16,
+//     },
+//     input: {
+//         height: 40,
+//         borderColor: 'gray',
+//         borderWidth: 1,
+//         width: '100%',
+//         marginBottom: 16,
+//         paddingLeft: 8,
+//     },
+//     text: {
+//         fontSize: 18,
+//         marginTop: 16,
+//     },
+// });
+
+// export default App;

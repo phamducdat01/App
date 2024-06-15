@@ -5,8 +5,9 @@ export const appInfors = {
         WIDTH: Dimensions.get('window').width,
         HEIGHT: Dimensions.get('window').height,
     },
-    BASE_URL: 'http://192.168.0.102:3001',
+    BASE_URL: 'http://192.168.16.104:3001',
     GoogleApiKey: 'AIzaSyCbtwJ3e1wGs0RcFkgQPtaLwg0P4XxkELA',
+    domain: 'https://devtogerther.netlify.app',
     monthNames: [
         'January',
         'February',

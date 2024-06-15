@@ -6,7 +6,7 @@ import AppRouters from './src/navigator/AppRouters';
 import store from './src/redux/store';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Host } from 'react-native-portalize';
-// import {HandleNotification} from './src/utils/handleNotification';
+import { HandleNotification } from './src/utils/handleNotification';
 // import Toast from 'react-native-toast-message';
 // import linking from './src/linking';
 import Geocoder from 'react-native-geocoding';
@@ -18,9 +18,10 @@ import Geocoder from 'react-native-geocoding';
 // const deviceType = DeviceInfo.getDeviceType();
 
 const App = () => {
-  // useEffect(() => {
-  //   HandleNotification.checkNotificationPersion();
-  // }, []);
+  useEffect(() => {
+    console.log('HandleNotification.checkNotificationPersion()');
+    HandleNotification.checkNotificationPersion();
+  }, []);
 
   // useEffect(() => {
   //   deviceType === 'Handset' && Orientation.lockToPortrait();

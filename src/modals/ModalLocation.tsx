@@ -69,6 +69,8 @@ const ModalLocation = (props: Props) => {
         );
     }, []);
 
+    // const api = `https://revgeocode.search.hereapi.com/v1/revgeocode?at=${lat},${long}&lang=vi-VI&apiKey=ChDZ3csCXlFXoTIA3RQ4LNJSIuWiT8ZFMRQiWiScFqE`;
+
     // useEffect(() => {
     //     GeoCoder.from(addressSelected)
     //         .then(res => {
@@ -110,7 +112,7 @@ const ModalLocation = (props: Props) => {
         }
     };
 
-    const handleGetAddressFromPosition = ({
+    const handleGetAddressFromPosition = async ({
         latitude,
         longitude,
     }: {
@@ -118,8 +120,22 @@ const ModalLocation = (props: Props) => {
         longitude: number;
     }) => {
 
+        const api = `https://revgeocode.search.hereapi.com/v1/revgeocode?at=${latitude},${longitude}&lang=vi-VI&apiKey=ChDZ3csCXlFXoTIA3RQ4LNJSIuWiT8ZFMRQiWiScFqE`;
+
+        let items;
+
+        try {
+            const res = await axios(api);
+
+            if (res && res.status === 200 && res.data) {
+                items = res.data.items;
+            }
+        } catch (error) {
+            console.log(error);
+        }
+
         onSelect({
-            address: 'This is demo address',
+            address: `${items[0].title}`,
             postion: {
                 lat: latitude,
                 long: longitude,
@@ -213,7 +229,7 @@ const ModalLocation = (props: Props) => {
                             const coordinate = event.nativeEvent.coordinate;
                             handleGetAddressFromPosition(coordinate);
                             event.persist();
-                            // return handleGetAddressFromPosition(event.nativeEvent.coordinate)
+                            return handleGetAddressFromPosition(event.nativeEvent.coordinate)
                         }
                         }
                         region={{

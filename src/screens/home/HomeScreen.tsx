@@ -162,11 +162,13 @@ const HomeScreen = ({ navigation }: any) => {
   };
 
   const getEvents = async (lat?: number, long?: number, distance?: number) => {
-    const api = `${lat && long
-      ? `/get-events?lat=${lat}&long=${long}&distance=${distance ?? 5
-      }&limit=5&isUpcoming=true`
-      : `/get-events?limit=5&isUpcoming=true`
-      }`;
+    // const api = `${lat && long
+    //   ? `/get-events?lat=${lat}&long=${long}&distance=${distance ?? 5
+    //   }&limit=5&isUpcoming=true`
+    //   : `/get-events?limit=5&isUpcoming=true`
+    //   }`;
+
+    const api = `/get-events`;
 
     if (events.length === 0 || nearbyEvents.length === 0) {
       setIsLoading(true);
@@ -178,6 +180,10 @@ const HomeScreen = ({ navigation }: any) => {
       res &&
         res.data &&
         (lat && long ? setNearbyEvents(res.data) : setEvents(res.data));
+
+
+      console.log("danh sach even");
+      console.log(res.data);
     } catch (error) {
       setIsLoading(false);
       console.log(`Get event error in home screen line 74 ${error}`);
@@ -322,7 +328,7 @@ const HomeScreen = ({ navigation }: any) => {
             marginTop: Platform.OS === 'ios' ? 22 : 18,
           },
         ]}>
-        <SectionComponent styles={{ paddingHorizontal: 0, paddingTop: 24 }}>
+        {/* <SectionComponent styles={{ paddingHorizontal: 0, paddingTop: 24 }}>
           <TabBarComponent
             title="Upcoming Events"
             onPress={() =>
@@ -344,7 +350,7 @@ const HomeScreen = ({ navigation }: any) => {
           ) : (
             <LoadingComponent isLoading={isLoading} values={events.length} />
           )}
-        </SectionComponent>
+        </SectionComponent> */}
         <SectionComponent>
           <ImageBackground
             source={require('../../assets/img/invite-image.png')}
@@ -378,7 +384,7 @@ const HomeScreen = ({ navigation }: any) => {
         </SectionComponent>
         <SectionComponent styles={{ paddingHorizontal: 0, paddingTop: 24 }}>
           <TabBarComponent
-            title="Nearby You"
+            title="All Events "
             onPress={() =>
               navigation.navigate('ExploreEvents', {
                 key: 'nearby',
@@ -386,13 +392,13 @@ const HomeScreen = ({ navigation }: any) => {
               })
             }
           />
-          {nearbyEvents.length > 0 ? (
+          {/* {nearbyEvents.length > 0 ? (
             <FlatList
               showsHorizontalScrollIndicator={false}
               horizontal
               data={nearbyEvents}
               renderItem={({ item, index }) => (
-                <EventItem key={`event${index}`} item={item} type="card" />
+                <EventItem key={`event${index}`} item={item} type="list" />
               )}
             />
           ) : (
@@ -400,7 +406,18 @@ const HomeScreen = ({ navigation }: any) => {
               isLoading={isLoading}
               values={nearbyEvents.length}
             />
-          )}
+          )} */}
+
+          <FlatList
+            showsHorizontalScrollIndicator={false}
+            horizontal
+            // data={nearbyEvents}
+            data={events}
+            renderItem={({ item, index }) => (
+              <EventItem key={`event${index}`} item={item} type="card" />
+            )}
+          />
+
         </SectionComponent>
       </ScrollView>
 

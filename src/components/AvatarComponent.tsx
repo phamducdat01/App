@@ -38,9 +38,11 @@ const AvatarComponent = (props: Props) => {
     }, [photoURL, uid]);
 
     const getUserProfile = async () => {
+        console.log('get profile uid');
         const api = `/get-profile?uid=${uid}`;
         try {
             const res: any = await userAPI.HandleUser(api);
+            console.log(res.data.photoUrl);
             setProfile({
                 name: res.data.name,
                 photoUrl: res.data.photoUrl,
@@ -52,9 +54,9 @@ const AvatarComponent = (props: Props) => {
 
     return (
         <TouchableOpacity disabled={!onPress} onPress={onPress}>
-            {photoURL ? (
+            {profile.photoUrl ? (
                 <Image
-                    source={{ uri: photoURL }}
+                    source={{ uri: profile.photoUrl }}
                     style={[
                         {
                             width: size ?? 40,
